@@ -2,7 +2,11 @@
 
 const Hero = () => {
   return (
-    <div>Hero</div>
+    <div className="h-screen w-full bg-[#f4f1ea]">
+      <div className="relative z-10">
+        
+      </div>
+    </div>
   )
 }
 
