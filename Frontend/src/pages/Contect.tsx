@@ -124,7 +124,7 @@ const Contect = () => {
           </div>
           <button 
             type="submit" 
-            className="w-full bg-[#2d6a6a] text-white font-bold text-lg py-4 rounded-xl hover:bg-[#1f4a4a] hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-xl mt-4 flex justify-center items-center gap-2"
+            className="w-full bg-[#2d6a6a] text-white font-bold text-lg py-4 rounded-xl hover:bg-[#1f4a4a] hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-xl mt-4 flex justify-center items-center gap-2 cursor-pointer outline-none"
           >
             Submit Application
           </button>
