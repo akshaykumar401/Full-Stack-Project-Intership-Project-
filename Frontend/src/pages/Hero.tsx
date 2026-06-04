@@ -2,7 +2,7 @@ import CheckBox from "../assets/Images/CheckBox.png"
 
 const Hero = () => {
   return (
-    <div className="h-[75vh] w-full bg-[#f4f1ea] flex flex-col justify-center items-center">
+    <div className="h-[65vh] w-full bg-[#f4f1ea] flex flex-col justify-center items-center">
       <h2 className="text-3xl md:text-5xl text-center font-bold mb-4 text-[#2d6a6a]">
         Full Stack Development Internship Task
       </h2>

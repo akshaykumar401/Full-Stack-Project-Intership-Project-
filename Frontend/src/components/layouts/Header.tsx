@@ -21,7 +21,7 @@ const Header = () => {
         </ul>
 
         {/* Desktop Button */}
-        <button className="hidden md:block bg-[#2d6a6a] text-white px-5 py-2 rounded-lg hover:bg-[#2a5252] hover:cursor-pointer duration-300">
+        <button className="hidden md:block bg-[#2d6a6a] text-white px-5 py-2 rounded-lg hover:bg-[#2a5252] hover:cursor-pointer duration-300 outline-none focus:outline-none">
           Apply Now
         </button>
 
