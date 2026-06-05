@@ -3,11 +3,11 @@ import axios, { AxiosError } from "axios";
 
 
 const initialState: {
-  userData: {};
+  contactData: {};
   loading: boolean;
   error: string | null;
 } = {
-  userData: {},
+  contactData: {},
   loading: false,
   error: null,
 };
@@ -16,7 +16,6 @@ const initialState: {
 export const contactUs: any = createAsyncThunk("contactUs", async (userData: any, { rejectWithValue }) => {
   try {
     const response = await axios.post(`/api/contact/contact`, userData);
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message);
@@ -35,7 +34,7 @@ export const contactSlice = createSlice({
       })
       .addCase(contactUs.fulfilled, (state, action) => {
         state.loading = false;
-        state.userData = action.payload;
+        state.contactData = action.payload;
       })
       .addCase(contactUs.rejected, (state, action) => {
         state.loading = false;

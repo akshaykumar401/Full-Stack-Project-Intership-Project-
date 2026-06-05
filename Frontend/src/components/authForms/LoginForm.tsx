@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import { RiArrowRightLongLine } from "@remixicon/react";
+import { useDispatch } from "react-redux";
+import { loginAdmin } from "../../features/admin/admin.slice";
 
 const LoginForm = ({ onLogin }: { onLogin: () => void }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin();
+    const data = {
+      userName: username,
+      password: password
+    }
+    const result = await dispatch(loginAdmin(data));
+    if (result.type === "admin/loginAdmin/fulfilled") {
+      onLogin();
+    } else {
+      setError("Invalid username or password");
+    }
   };
 
   return (
@@ -25,6 +38,11 @@ const LoginForm = ({ onLogin }: { onLogin: () => void }) => {
           <p className="text-[#2d6a6a]/70 mt-3 text-sm font-medium tracking-wide">
             Enter your credentials to continue
           </p>
+          {error && (
+            <p className="text-red-700 mt-1 text-sm font-medium tracking-wide">
+              {error}
+            </p>
+          )}
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">

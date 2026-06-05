@@ -2,14 +2,18 @@ import { Outlet, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LoginForm } from "../../components";
 import { RiLogoutBoxRLine, RiMailOpenLine } from "@remixicon/react";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutAdmin } from "../../features/admin/admin.slice";
 
 const Admin = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { adminData } = useSelector((state: any) => state.admin);
   
   // Checking login status from localStorage as a simple frontend state 
   const [isLogged, setIsLogged] = useState(
-    localStorage.getItem("isAdminLogged") === "true"
+    localStorage.getItem("isAdminLogged") === "false"
   );
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -30,10 +34,13 @@ const Admin = () => {
     navigate("/admin/dashboard");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAdminLogged");
-    setIsLogged(false);
-    navigate("/admin");
+  const handleLogout = async () => {
+    const result = await dispatch(logoutAdmin());
+    if(result.type === "logoutAdmin/fulfilled") {
+      localStorage.removeItem("isAdminLogged");
+      setIsLogged(false);
+      navigate("/admin");
+    }
   };
 
   return location.pathname === "/admin" ? (
@@ -105,7 +112,7 @@ const Admin = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="w-9 h-9 bg-[#2d6a6a] text-[#f4f1ea] rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer ring-2 ring-white">
-              A
+              { adminData?.data?.userName?.charAt(0).toUpperCase() }
             </div>
           </div>
         </header>

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getAllContacts } from "../../features/admin/admin.slice";
 
 interface ContactMessage {
   _id: string;
@@ -8,39 +10,20 @@ interface ContactMessage {
   createdAt: string;
 }
 
-const DUMMY_MESSAGES: ContactMessage[] = [
-  {
-    _id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    message: "Hello, I am interested in your services and would like to know more about the pricing plans you offer.",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), 
-  },
-  {
-    _id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    message: "I encountered a bug on the checkout page. Could you please look into it? Thanks!",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), 
-  },
-  {
-    _id: "3",
-    name: "Alice Johnson",
-    email: "alice.j@example.com",
-    message: "Great application! Really enjoying the user experience so far.",
-    createdAt: new Date().toISOString(), 
-  },
-  {
-    _id: "4",
-    name: "Bob Builder",
-    email: "bob@builder.com",
-    message: "Do you offer any customized solutions for enterprise clients? Let's connect.",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), 
-  }
-];
-
 const Dashboard = () => {
-  const [messages] = useState<ContactMessage[]>(DUMMY_MESSAGES);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      const result = await dispatch(getAllContacts());
+      if (result.type === "getAllContacts/fulfilled") {
+        setMessages(result.payload?.data)
+      }
+    };
+    fetchContacts();
+  }, [dispatch]);
+  
 
   return (
     <div className="space-y-6">
