@@ -52,6 +52,19 @@ export const logoutAdmin: any = createAsyncThunk(
   }
 )
 
+// Get Current User Async Thunk
+export const getCurrentUser: any = createAsyncThunk(
+  "getCurrentUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/api/admin/current-user");
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+)
+
 // Admin Slice
 export const adminSlice = createSlice({
   name: "admin",
@@ -100,6 +113,18 @@ export const adminSlice = createSlice({
         state.contacts = [];
       })
       .addCase(logoutAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch user data";
+      })
+      // Get Current User Async Thunk
+      .addCase(getCurrentUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getCurrentUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.adminData = action.payload;
+      })
+      .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch user data";
       })

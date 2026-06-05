@@ -1,21 +1,33 @@
 import { Outlet, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoginForm } from "../../components";
 import { RiLogoutBoxRLine, RiMailOpenLine } from "@remixicon/react";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAdmin } from "../../features/admin/admin.slice";
+import { getCurrentUser, logoutAdmin } from "../../features/admin/admin.slice";
 
 const Admin = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { adminData } = useSelector((state: any) => state.admin);
-  
+
   // Checking login status from localStorage as a simple frontend state 
-  const [isLogged, setIsLogged] = useState(
-    localStorage.getItem("isAdminLogged") === "false"
-  );
-  
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      const loginInLocalStorage = localStorage.getItem("isAdminLogged") === "true";
+      let loginInApi = false;
+
+      const result = await dispatch(getCurrentUser());
+      if (result.type === "getCurrentUser/fulfilled") {
+        loginInApi = true;
+      }
+      setIsLogged(loginInLocalStorage || loginInApi);
+    }
+    check();
+  }, []);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // If trying to access dashboard (or any other admin sub-route) and not logged in, redirect to login
@@ -36,7 +48,7 @@ const Admin = () => {
 
   const handleLogout = async () => {
     const result = await dispatch(logoutAdmin());
-    if(result.type === "logoutAdmin/fulfilled") {
+    if (result.type === "logoutAdmin/fulfilled") {
       localStorage.removeItem("isAdminLogged");
       setIsLogged(false);
       navigate("/admin");
@@ -44,29 +56,28 @@ const Admin = () => {
   };
 
   return location.pathname === "/admin" ? (
-    <LoginForm onLogin={handleLogin}/>
+    <LoginForm onLogin={handleLogin} />
   ) : (
     <div className="flex h-screen bg-[#f4f1ea] overflow-hidden font-sans relative">
-      
+
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-20 md:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside 
-        className={`fixed inset-y-0 left-0 transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out md:flex w-64 bg-[#2d6a6a] text-[#f4f1ea] flex-col shadow-2xl z-30`}
+      <aside
+        className={`fixed inset-y-0 left-0 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out md:flex w-64 bg-[#2d6a6a] text-[#f4f1ea] flex-col shadow-2xl z-30`}
       >
         <div className="h-16 flex items-center justify-between md:justify-center px-4 md:px-0 border-b border-[#f4f1ea]/10">
           <h1 className="text-xl font-extrabold text-[#f4f1ea] tracking-wider uppercase">
             Admin Portal
           </h1>
-          <button 
+          <button
             className="md:hidden text-[#f4f1ea]"
             onClick={() => setIsSidebarOpen(false)}
           >
@@ -81,7 +92,7 @@ const Admin = () => {
               size={24}
               className="text-[#e8a598]"
             />
-             Messages
+            Messages
           </a>
         </nav>
         <div className="p-4 border-t border-[#f4f1ea]/10">
@@ -100,7 +111,7 @@ const Admin = () => {
         {/* Top Header */}
         <header className="h-16 bg-[#f4f1ea] border-b border-[#2d6a6a]/10 flex items-center justify-between px-4 md:px-8 shadow-sm z-10 w-full">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               className="md:hidden text-[#2d6a6a] p-1 rounded-md hover:bg-[#2d6a6a]/5"
               onClick={() => setIsSidebarOpen(true)}
             >
@@ -112,11 +123,11 @@ const Admin = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="w-9 h-9 bg-[#2d6a6a] text-[#f4f1ea] rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer ring-2 ring-white">
-              { adminData?.data?.userName?.charAt(0).toUpperCase() }
+              {adminData?.data?.userName?.charAt(0).toUpperCase()}
             </div>
           </div>
         </header>
-        
+
         {/* Scrollable Content */}
         <div className="flex-1 overflow-auto p-4 md:p-8 relative bg-[#f4f1ea] w-full">
           <div className="max-w-6xl mx-auto">

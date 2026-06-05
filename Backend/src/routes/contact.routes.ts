@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createContactFormMessage
-} from "../controller/contact.controller.ts";
+} from "../controllers/contact.controller.ts";
 
 const router: Router = Router();
 router.route("/contact").post(createContactFormMessage);

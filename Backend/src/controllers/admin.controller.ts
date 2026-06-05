@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.ts";
 import { type Request, type Response } from "express";
 import { Contact } from "../models/contact.model.ts";
 import jwt from "jsonwebtoken";
+import { type CustomRequest } from "../middlewares/auth.middleware.ts";
 
 // Login the Admin user
 const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
@@ -80,4 +81,17 @@ const logoutAdmin = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-export { loginAdmin, getAllContactMessages, logoutAdmin };
+// Getting the current user
+const getCurrentUser = asyncHandler(async (req: CustomRequest, res: Response) => {
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { userName: req?.user?.userName ?? "" },
+        "Current User Fetched Successfully",
+      ),
+    );
+});
+
+export { loginAdmin, getAllContactMessages, logoutAdmin, getCurrentUser };
