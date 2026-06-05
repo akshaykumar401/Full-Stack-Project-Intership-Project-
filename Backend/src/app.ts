@@ -1,4 +1,5 @@
 import express from "express";
+import type { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -21,6 +22,16 @@ import adminRouter from "./routes/admin.routes.ts";
 // Routes Decleration....
 app.use("/api/v1/contact", contactRouter);
 app.use("/api/v1/admin", adminRouter);
+
+// Health Route
+app.get("/", (req: Request, res: Response) => {
+  return res
+    .status(200)
+    .json({
+      message: "Backend is Healthy",
+      status: 200,
+    });
+});
 
 
 export { app };
