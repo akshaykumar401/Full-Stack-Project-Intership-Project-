@@ -11,24 +11,30 @@ const Admin = () => {
   const dispatch = useDispatch();
   const { adminData } = useSelector((state: any) => state.admin);
 
-  // Checking login status from localStorage as a simple frontend state 
   const [isLogged, setIsLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const check = async () => {
-      const loginInLocalStorage = localStorage.getItem("isAdminLogged") === "true";
       let loginInApi = false;
-
       const result = await dispatch(getCurrentUser());
       if (result.type === "getCurrentUser/fulfilled") {
         loginInApi = true;
       }
-      setIsLogged(loginInLocalStorage || loginInApi);
+      setIsLogged(loginInApi);
+      setIsLoading(false);
     }
     check();
-  }, []);
+  }, [dispatch]);
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f4f1ea]">
+        <div className="w-16 h-16 border-4 border-[#2d6a6a] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   // If trying to access dashboard (or any other admin sub-route) and not logged in, redirect to login
   if (location.pathname !== "/admin" && !isLogged) {
@@ -41,7 +47,6 @@ const Admin = () => {
   }
 
   const handleLogin = () => {
-    localStorage.setItem("isAdminLogged", "true");
     setIsLogged(true);
     navigate("/admin/dashboard");
   };
@@ -49,7 +54,6 @@ const Admin = () => {
   const handleLogout = async () => {
     const result = await dispatch(logoutAdmin());
     if (result.type === "logoutAdmin/fulfilled") {
-      localStorage.removeItem("isAdminLogged");
       setIsLogged(false);
       navigate("/admin");
     }
